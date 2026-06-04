@@ -1,4 +1,4 @@
-import { act, fireEvent, screen } from '@testing-library/react'
+import { act, fireEvent, screen, waitFor } from '@testing-library/react'
 import * as React from 'react'
 import { createSystemFeaturesWrapper } from '@/__tests__/utils/mock-system-features'
 import { renderWithNuqs } from '@/test/nuqs-testing'
@@ -13,14 +13,18 @@ const mockUseWorkflowOnlineUsers = vi.hoisted(() => vi.fn((_options: unknown) =>
 
 const mockReplace = vi.fn()
 const mockRouter = { replace: mockReplace }
+let mockSearchParams = new URLSearchParams('')
 vi.mock('@/next/navigation', () => ({
   useRouter: () => mockRouter,
-  useSearchParams: () => new URLSearchParams(''),
+  usePathname: () => '/apps',
+  useSearchParams: () => mockSearchParams,
 }))
 
 vi.mock('@/service/client', () => ({
   consoleClient: {
-    systemFeatures: vi.fn(),
+    systemFeatures: {
+      get: vi.fn(),
+    },
   },
   consoleQuery: {
     apps: {
@@ -34,7 +38,9 @@ vi.mock('@/service/client', () => ({
       },
     },
     systemFeatures: {
-      queryKey: () => ['console', 'systemFeatures'],
+      get: {
+        queryKey: () => ['console', 'systemFeatures', 'get'],
+      },
     },
   },
 }))
@@ -48,17 +54,32 @@ vi.mock('@/context/app-context', () => ({
   }),
 }))
 
-const mockSetQuery = vi.fn()
+const mockSetKeywords = vi.fn()
+const mockSetIsCreatedByMe = vi.fn()
+const mockSetCategory = vi.fn()
 const mockQueryState = {
-  tagIDs: [] as string[],
+  category: 'all',
   keywords: '',
   isCreatedByMe: false,
 }
 vi.mock('../hooks/use-apps-query-state', () => ({
-  default: () => ({
+  isAppListCategory: (value: string) => value === 'all' || Object.values(AppModeEnum).includes(value as AppModeEnum),
+  useAppsQueryState: () => ({
     query: mockQueryState,
-    setQuery: mockSetQuery,
+    setCategory: mockSetCategory,
+    setKeywords: mockSetKeywords,
+    setIsCreatedByMe: mockSetIsCreatedByMe,
   }),
+}))
+
+vi.mock('@/features/tag-management/components/tag-filter', () => ({
+  TagFilter: ({ value, onChange, onOpenTagManagement }: { value: string[], onChange: (value: string[]) => void, onOpenTagManagement: () => void }) => (
+    <div>
+      <button type="button" onClick={() => onChange(['tag-1'])}>common.tag.placeholder</button>
+      <span data-testid="tag-filter-value">{value.join(',')}</span>
+      <button type="button" onClick={onOpenTagManagement}>Manage tags</button>
+    </div>
+  ),
 }))
 
 let mockOnDSLFileDropped: ((file: File) => void) | null = null
@@ -222,6 +243,7 @@ beforeAll(() => {
 // Render helper wrapping with shared nuqs testing helper plus a seeded
 // systemFeatures cache so List can resolve its useSuspenseQuery.
 const renderList = (searchParams = '') => {
+  mockSearchParams = new URLSearchParams(searchParams)
   const { wrapper: SystemFeaturesWrapper } = createSystemFeaturesWrapper({
     systemFeatures: { branding: { enabled: false } },
   })
@@ -244,7 +266,7 @@ describe('List', () => {
     mockServiceState.hasNextPage = false
     mockServiceState.isLoading = false
     mockServiceState.isFetchingNextPage = false
-    mockQueryState.tagIDs = []
+    mockQueryState.category = 'all'
     mockQueryState.keywords = ''
     mockQueryState.isCreatedByMe = false
     mockUseWorkflowOnlineUsers.mockClear()
@@ -317,25 +339,21 @@ describe('List', () => {
   })
 
   describe('Tab Navigation', () => {
-    it('should update URL when workflow tab is clicked', async () => {
-      const { onUrlUpdate } = renderList()
+    it('should update category when workflow tab is clicked', () => {
+      renderList()
 
       fireEvent.click(screen.getByText('app.types.workflow'))
 
-      await vi.waitFor(() => expect(onUrlUpdate).toHaveBeenCalled())
-      const lastCall = onUrlUpdate.mock.calls[onUrlUpdate.mock.calls.length - 1]![0]
-      expect(lastCall.searchParams.get('category')).toBe(AppModeEnum.WORKFLOW)
+      expect(mockSetCategory).toHaveBeenCalledWith(AppModeEnum.WORKFLOW)
     })
 
-    it('should update URL when all tab is clicked', async () => {
-      const { onUrlUpdate } = renderList('?category=workflow')
+    it('should update category when all tab is clicked', () => {
+      mockQueryState.category = AppModeEnum.WORKFLOW
+      renderList()
 
       fireEvent.click(screen.getByText('app.types.all'))
 
-      await vi.waitFor(() => expect(onUrlUpdate).toHaveBeenCalled())
-      const lastCall = onUrlUpdate.mock.calls[onUrlUpdate.mock.calls.length - 1]![0]
-      // nuqs removes the default value ('all') from URL params
-      expect(lastCall.searchParams.has('category')).toBe(false)
+      expect(mockSetCategory).toHaveBeenCalledWith('all')
     })
   })
 
@@ -351,7 +369,7 @@ describe('List', () => {
       const input = screen.getByRole('textbox')
       fireEvent.change(input, { target: { value: 'test search' } })
 
-      expect(mockSetQuery).toHaveBeenCalled()
+      expect(mockSetKeywords).toHaveBeenCalledWith('test search')
     })
 
     it('should handle search clear button click', () => {
@@ -364,17 +382,18 @@ describe('List', () => {
       if (clearButton)
         fireEvent.click(clearButton)
 
-      expect(mockSetQuery).toHaveBeenCalled()
+      expect(mockSetKeywords).toHaveBeenCalledWith('')
     })
   })
 
   describe('App List Query', () => {
     it('should build paged query input from active filters', () => {
-      mockQueryState.tagIDs = ['tag-1']
       mockQueryState.keywords = 'sales'
       mockQueryState.isCreatedByMe = true
+      mockQueryState.category = AppModeEnum.WORKFLOW
 
-      renderList('?category=workflow')
+      renderList()
+      fireEvent.click(screen.getByText('common.tag.placeholder'))
 
       const options = mockAppListInfiniteOptions.mock.calls.at(-1)?.[0] as AppListInfiniteOptions
 
@@ -390,6 +409,17 @@ describe('List', () => {
       })
       expect(options.getNextPageParam({ has_more: true, page: 2 })).toBe(3)
       expect(options.getNextPageParam({ has_more: false, page: 2 })).toBeUndefined()
+    })
+
+    it('should remove legacy tagIDs from URL while preserving other filters', async () => {
+      renderList('?category=workflow&tagIDs=tag-1;tag-2&keywords=sales&isCreatedByMe=true')
+
+      await waitFor(() => {
+        expect(mockReplace).toHaveBeenCalledWith(
+          '/apps?category=workflow&keywords=sales&isCreatedByMe=true',
+          { scroll: false },
+        )
+      })
     })
   })
 
@@ -409,10 +439,10 @@ describe('List', () => {
     it('should handle checkbox change', () => {
       renderList()
 
-      const checkbox = screen.getByTestId('checkbox-undefined')
+      const checkbox = screen.getByRole('checkbox', { name: 'app.showMyCreatedAppsOnly' })
       fireEvent.click(checkbox)
 
-      expect(mockSetQuery).toHaveBeenCalled()
+      expect(mockSetIsCreatedByMe).toHaveBeenCalledWith(true)
     })
   })
 
@@ -506,8 +536,8 @@ describe('List', () => {
       expect(screen.getByText('app.types.completion'))!.toBeInTheDocument()
     })
 
-    it('should update URL for each app type tab click', async () => {
-      const { onUrlUpdate } = renderList()
+    it('should update category for each app type tab click', () => {
+      renderList()
 
       const appTypeTexts = [
         { mode: AppModeEnum.WORKFLOW, text: 'app.types.workflow' },
@@ -518,11 +548,9 @@ describe('List', () => {
       ]
 
       for (const { mode, text } of appTypeTexts) {
-        onUrlUpdate.mockClear()
+        mockSetCategory.mockClear()
         fireEvent.click(screen.getByText(text))
-        await vi.waitFor(() => expect(onUrlUpdate).toHaveBeenCalled())
-        const lastCall = onUrlUpdate.mock.calls[onUrlUpdate.mock.calls.length - 1]![0]
-        expect(lastCall.searchParams.get('category')).toBe(mode)
+        expect(mockSetCategory).toHaveBeenCalledWith(mode)
       }
     })
   })

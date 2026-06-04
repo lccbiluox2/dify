@@ -8,12 +8,32 @@ from .account import (
     TenantAccountRole,
     TenantStatus,
 )
+from .agent import (
+    Agent,
+    AgentConfigRevision,
+    AgentConfigRevisionOperation,
+    AgentConfigSnapshot,
+    AgentIconType,
+    AgentKind,
+    AgentRuntimeSession,
+    AgentRuntimeSessionOwnerType,
+    AgentRuntimeSessionStatus,
+    AgentScope,
+    AgentSource,
+    AgentStatus,
+    WorkflowAgentBindingType,
+    WorkflowAgentNodeBinding,
+    WorkflowAgentRuntimeSession,
+    WorkflowAgentRuntimeSessionStatus,
+)
 from .api_based_extension import APIBasedExtension, APIBasedExtensionPoint
 from .comment import (
     WorkflowComment,
     WorkflowCommentMention,
     WorkflowCommentReply,
 )
+from .credential_permission import CredentialPermission
+from .credential_permission import CredentialType as CredentialPermissionType
 from .dataset import (
     AppDatasetJoin,
     Dataset,
@@ -35,6 +55,7 @@ from .enums import (
     AppTriggerStatus,
     AppTriggerType,
     CreatorUserRole,
+    PermissionEnum,
     WorkflowRunTriggeredFrom,
     WorkflowTriggerStatus,
 )
@@ -73,7 +94,7 @@ from .model import (
     TrialApp,
     UploadFile,
 )
-from .oauth import DatasourceOauthParamConfig, DatasourceProvider
+from .oauth import DatasourceOauthParamConfig, DatasourceProvider, OAuthAccessToken
 from .provider import (
     LoadBalancingModelConfig,
     Provider,
@@ -125,6 +146,18 @@ __all__ = [
     "AccountIntegrate",
     "AccountStatus",
     "AccountTrialAppRecord",
+    "Agent",
+    "AgentConfigRevision",
+    "AgentConfigRevisionOperation",
+    "AgentConfigSnapshot",
+    "AgentIconType",
+    "AgentKind",
+    "AgentRuntimeSession",
+    "AgentRuntimeSessionOwnerType",
+    "AgentRuntimeSessionStatus",
+    "AgentScope",
+    "AgentSource",
+    "AgentStatus",
     "ApiRequest",
     "ApiToken",
     "ApiToolProvider",
@@ -144,6 +177,8 @@ __all__ = [
     "Conversation",
     "ConversationVariable",
     "CreatorUserRole",
+    "CredentialPermission",
+    "CredentialPermissionType",
     "DataSourceApiKeyAuthBinding",
     "DataSourceOauthBinding",
     "Dataset",
@@ -177,7 +212,9 @@ __all__ = [
     "MessageChain",
     "MessageFeedback",
     "MessageFile",
+    "OAuthAccessToken",
     "OperationLog",
+    "PermissionEnum",
     "PinnedConversation",
     "Provider",
     "ProviderModel",
@@ -210,6 +247,10 @@ __all__ = [
     "UploadFile",
     "Whitelist",
     "Workflow",
+    "WorkflowAgentBindingType",
+    "WorkflowAgentNodeBinding",
+    "WorkflowAgentRuntimeSession",
+    "WorkflowAgentRuntimeSessionStatus",
     "WorkflowAppLog",
     "WorkflowAppLogCreatedFrom",
     "WorkflowArchiveLog",
