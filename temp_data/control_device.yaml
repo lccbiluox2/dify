@@ -1,0 +1,50 @@
+identity:
+  name: control_device
+  author: your-name
+  label:
+    en_US: Control Device
+    zh_Hans: 控制设备
+description:
+  human:
+    en_US: "Send a control command to a specific device"
+    zh_Hans: "向指定设备发送控制命令，如开关灯、调节温度、设置亮度等"
+  llm: "Send a control command to a device. Requires device_id, action (such as turn_on, turn_off, set_brightness, set_temperature), and an optional value parameter."
+parameters:
+  - name: device_id
+    type: string
+    required: true
+    label:
+      en_US: Device ID
+      zh_Hans: 设备ID
+    human_description:
+      en_US: "The unique identifier of the device to control"
+      zh_Hans: "要控制的设备唯一标识符"
+    llm_description: "The device_id to send command to, e.g. device_002"
+    form: llm
+
+  - name: action
+    type: string
+    required: true
+    label:
+      en_US: Action
+      zh_Hans: 操作动作
+    human_description:
+      en_US: "The action to perform, e.g. turn_on, turn_off, set_brightness, set_color, set_threshold"
+      zh_Hans: "要执行的动作，如：turn_on（开启）、turn_off（关闭）、set_brightness（设置亮度）、set_color（设置颜色）、set_threshold（设置阈值）"
+    llm_description: "The action name to execute on the device"
+    form: llm
+
+  - name: value
+    type: string
+    required: false
+    label:
+      en_US: Value
+      zh_Hans: 参数值
+    human_description:
+      en_US: "The value for the action, e.g. 100 for brightness, #FF0000 for color"
+      zh_Hans: "动作的参数值，如亮度值100、颜色值#FF0000等"
+    llm_description: "The value parameter for the action, e.g. '80' for brightness or '#FF0000' for color"
+    form: llm
+extra:
+  python:
+    source: tools/control_device.py

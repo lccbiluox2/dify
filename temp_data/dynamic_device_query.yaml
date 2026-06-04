@@ -1,0 +1,75 @@
+identity:
+  name: dynamic_device_query
+  author: your-name
+  label:
+    en_US: Dynamic Device Query
+    zh_Hans: 动态设备查询
+description:
+  human:
+    en_US: "Query device data with device_id loaded dynamically from the Spring Boot API (dynamic-select)."
+    zh_Hans: "设备ID从后端接口动态下拉加载，再查询设备详情、状态或历史数据。"
+  llm: "Query IoT device information. Select device_id from dynamic dropdown (loaded from backend). Choose query_type: detail, status, or data."
+parameters:
+  - name: device_id
+    type: dynamic-select
+    required: true
+    label:
+      en_US: Device
+      zh_Hans: 设备
+    human_description:
+      en_US: "Device list from Spring API (shown under Input Variables; Dify 1.12 requires form: llm for dynamic-select)"
+      zh_Hans: "从 Spring 接口动态加载（显示在「输入变量」区；Dify 1.12 需 form: llm 才会触发下拉请求）"
+    llm_description: "The device_id to query, selected from backend-powered dropdown."
+    form: llm
+  - name: query_type
+    type: select
+    required: true
+    label:
+      en_US: Query Type
+      zh_Hans: 查询类型
+    human_description:
+      en_US: "What to query for the selected device"
+      zh_Hans: "对已选设备执行的查询类型"
+    llm_description: "Query type: detail (device info), status (real-time metrics), data (historical records)."
+    form: form
+    default: status
+    options:
+      - value: detail
+        label:
+          en_US: Device detail
+          zh_Hans: 设备详情
+      - value: status
+        label:
+          en_US: Real-time status
+          zh_Hans: 实时状态
+      - value: data
+        label:
+          en_US: Historical data
+          zh_Hans: 历史数据
+  - name: metric
+    type: string
+    required: false
+    label:
+      en_US: Metric (for data)
+      zh_Hans: 指标（历史数据时）
+    human_description:
+      en_US: "Metric name when query_type is data, default temperature"
+      zh_Hans: "查询历史数据时的指标名，默认 temperature"
+    llm_description: "Metric for historical data query, e.g. temperature, humidity, brightness."
+    form: form
+    default: temperature
+  - name: limit
+    type: number
+    required: false
+    label:
+      en_US: Record limit
+      zh_Hans: 记录条数
+    human_description:
+      en_US: "Max records when query_type is data, default 5"
+      zh_Hans: "历史数据条数，默认 5"
+    llm_description: "Number of historical records to return, default 5."
+    form: form
+    default: 5
+extra:
+  python:
+    source: tools/dynamic_device_query.py
