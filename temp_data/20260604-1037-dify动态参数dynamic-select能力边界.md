@@ -1241,6 +1241,12 @@ def _fetch_parameter_options(self, parameter: str) -> list[ParameterOption]:
 
 **不能。** `_fetch_parameter_options` 没有分页参数，API 也不传 `page`/`page_size`。所有选项必须一次性返回。如果选项超过数百条，建议在前端做客户端搜索（浏览器原生 Select 支持键盘过滤）。
 
+如果选项数量达到上千条，建议考虑以下策略：
+
+- 在后端对选项进行预筛选，只返回与当前用户相关的选项
+- 使用方案三（多步骤工作流），先用一个节点缩小范围，再用 dynamic-select 展示筛选后的结果
+- 直接在 `_invoke` 中接受用户输入的 ID，跳过下拉选择环节
+
 ### Q5: 配置期选的值在运行期会变吗？
 
 **不会。** 画布保存后，dynamic-select 的值变为静态常量存储在 `tool_parameters` 中。运行期直接使用这个常量，不会再次调用下拉接口。如果需要每次运行取最新值，应使用方案四（自动加载）或多步骤工作流。
