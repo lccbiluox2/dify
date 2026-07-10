@@ -1,0 +1,834 @@
+app:
+  description: ''
+  icon: a42ed03f-2ae2-48a1-8c1a-f92c8a6b7730
+  icon_background: ''
+  icon_type: image
+  mode: workflow
+  name: 真实可用--安全事件查询测试剧本0622
+  use_icon_as_answer_icon: false
+dependencies: []
+kind: app
+version: 0.6.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 20
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1781094085148'
+        sourceType: iteration-start
+        targetType: code
+      id: 1781094085148start-source-1781094091084-target
+      source: 1781094085148start
+      sourceHandle: source
+      target: '1781094091084'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: tool
+        targetType: code
+      id: 1781094025706-source-1781094180113-target
+      source: '1781094025706'
+      sourceHandle: source
+      target: '1781094180113'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: iteration
+      id: 1781094180113-source-1781094085148-target
+      source: '1781094180113'
+      sourceHandle: source
+      target: '1781094085148'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: start
+        targetType: tool
+      id: 1781093649261-source-1781094025706-target
+      source: '1781093649261'
+      sourceHandle: source
+      target: '1781094025706'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1781094085148'
+        sourceType: code
+        targetType: tool
+      id: 1781094091084-source-1781094339078-target
+      source: '1781094091084'
+      sourceHandle: source
+      target: '1781094339078'
+      targetHandle: target
+      type: custom
+      zIndex: 1002
+    nodes:
+    - data:
+        selected: false
+        title: 用户输入
+        type: start
+        variables: []
+      height: 74
+      id: '1781093649261'
+      position:
+        x: 199.36094910918376
+        y: 299.2781017816325
+      positionAbsolute:
+        x: 199.36094910918376
+        y: 299.2781017816325
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        is_team_authorization: true
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: form
+          human_description:
+            en_US: 'Query start time, format: yyyy-MM-dd HH:mm:ss (defaults to today
+              00:00:00 if empty)'
+            ja_JP: 'Query start time, format: yyyy-MM-dd HH:mm:ss (defaults to today
+              00:00:00 if empty)'
+            pt_BR: 'Query start time, format: yyyy-MM-dd HH:mm:ss (defaults to today
+              00:00:00 if empty)'
+            zh_Hans: 查询起始时间，格式：yyyy-MM-dd HH:mm:ss（为空则默认当天00:00:00）
+          label:
+            en_US: Start Time
+            ja_JP: Start Time
+            pt_BR: Start Time
+            zh_Hans: 开始时间
+          llm_description: Start time for the query range, format yyyy-MM-dd HH:mm:ss.
+            Defaults to today 00:00:00.
+          max: null
+          min: null
+          name: start_time
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: form
+          human_description:
+            en_US: 'Query end time, format: yyyy-MM-dd HH:mm:ss (defaults to current
+              time if empty)'
+            ja_JP: 'Query end time, format: yyyy-MM-dd HH:mm:ss (defaults to current
+              time if empty)'
+            pt_BR: 'Query end time, format: yyyy-MM-dd HH:mm:ss (defaults to current
+              time if empty)'
+            zh_Hans: 查询结束时间，格式：yyyy-MM-dd HH:mm:ss（为空则默认当前时间）
+          label:
+            en_US: End Time
+            ja_JP: End Time
+            pt_BR: End Time
+            zh_Hans: 结束时间
+          llm_description: End time for the query range, format yyyy-MM-dd HH:mm:ss.
+            Defaults to current time.
+          max: null
+          min: null
+          name: end_time
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: ''
+          form: form
+          human_description:
+            en_US: Fuzzy search by event name
+            ja_JP: Fuzzy search by event name
+            pt_BR: Fuzzy search by event name
+            zh_Hans: 按事件名称模糊搜索
+          label:
+            en_US: Event Name
+            ja_JP: Event Name
+            pt_BR: Event Name
+            zh_Hans: 事件名称
+          llm_description: Fuzzy filter by security event name, e.g. MuddyWater.
+          max: null
+          min: null
+          name: event_name
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: ''
+          form: form
+          human_description:
+            en_US: Event sub-category, e.g. 勒索软件事件
+            ja_JP: Event sub-category, e.g. 勒索软件事件
+            pt_BR: Event sub-category, e.g. 勒索软件事件
+            zh_Hans: 事件子类型，如：勒索软件事件
+          label:
+            en_US: Event Type
+            ja_JP: Event Type
+            pt_BR: Event Type
+            zh_Hans: 事件类型
+          llm_description: Event sub-category filter, e.g. 勒索软件事件, 挖矿事件.
+          max: null
+          min: null
+          name: sub_category
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: null
+          form: form
+          human_description:
+            en_US: Threat severity level filter
+            ja_JP: Threat severity level filter
+            pt_BR: Threat severity level filter
+            zh_Hans: 威胁等级过滤
+          label:
+            en_US: Threat Severity
+            ja_JP: Threat Severity
+            pt_BR: Threat Severity
+            zh_Hans: 威胁等级
+          llm_description: 'Filter by threat severity: 高 (high), 中 (medium), 低 (low).'
+          max: null
+          min: null
+          name: threat_severity
+          options:
+          - icon: ''
+            label:
+              en_US: High
+              ja_JP: High
+              pt_BR: High
+              zh_Hans: 高
+            value: 高
+          - icon: ''
+            label:
+              en_US: Medium
+              ja_JP: Medium
+              pt_BR: Medium
+              zh_Hans: 中
+            value: 中
+          - icon: ''
+            label:
+              en_US: Low
+              ja_JP: Low
+              pt_BR: Low
+              zh_Hans: 低
+            value: 低
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: select
+        - auto_generate: null
+          default: null
+          form: form
+          human_description:
+            en_US: Handling status filter
+            ja_JP: Handling status filter
+            pt_BR: Handling status filter
+            zh_Hans: 处置状态过滤
+          label:
+            en_US: Alarm Status
+            ja_JP: Alarm Status
+            pt_BR: Alarm Status
+            zh_Hans: 处置状态
+          llm_description: 'Filter by handling status: 未处置 (unhandled), 处置中 (in progress),
+            已处置 (handled).'
+          max: null
+          min: null
+          name: alarm_status
+          options:
+          - icon: ''
+            label:
+              en_US: Unhandled
+              ja_JP: Unhandled
+              pt_BR: Unhandled
+              zh_Hans: 未处置
+            value: 未处置
+          - icon: ''
+            label:
+              en_US: In Progress
+              ja_JP: In Progress
+              pt_BR: In Progress
+              zh_Hans: 处置中
+            value: 处置中
+          - icon: ''
+            label:
+              en_US: Handled
+              ja_JP: Handled
+              pt_BR: Handled
+              zh_Hans: 已处置
+            value: 已处置
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: select
+        - auto_generate: null
+          default: null
+          form: form
+          human_description:
+            en_US: Event result filter
+            ja_JP: Event result filter
+            pt_BR: Event result filter
+            zh_Hans: 事件结果过滤
+          label:
+            en_US: Alarm Results
+            ja_JP: Alarm Results
+            pt_BR: Alarm Results
+            zh_Hans: 事件结果
+          llm_description: 'Filter by event result: 成功 (success), 失败 (failure).'
+          max: null
+          min: null
+          name: alarm_results
+          options:
+          - icon: ''
+            label:
+              en_US: Success
+              ja_JP: Success
+              pt_BR: Success
+              zh_Hans: 成功
+            value: 成功
+          - icon: ''
+            label:
+              en_US: Failure
+              ja_JP: Failure
+              pt_BR: Failure
+              zh_Hans: 失败
+            value: 失败
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: select
+        - auto_generate: null
+          default: ''
+          form: form
+          human_description:
+            en_US: Filter by IP address (comma separated for multiple)
+            ja_JP: Filter by IP address (comma separated for multiple)
+            pt_BR: Filter by IP address (comma separated for multiple)
+            zh_Hans: 按关注IP过滤（多个用逗号分隔）
+          label:
+            en_US: Focus IP
+            ja_JP: Focus IP
+            pt_BR: Focus IP
+            zh_Hans: 关注IP
+          llm_description: Filter by focus IP address, e.g. 10.50.86.143.
+          max: null
+          min: null
+          name: focus_ip
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: 1000
+          form: form
+          human_description:
+            en_US: Number of records per page (default 1000, max 1000)
+            ja_JP: Number of records per page (default 1000, max 1000)
+            pt_BR: Number of records per page (default 1000, max 1000)
+            zh_Hans: 每页条数（默认1000，最大1000）
+          label:
+            en_US: Page Size
+            ja_JP: Page Size
+            pt_BR: Page Size
+            zh_Hans: 每页条数
+          llm_description: Number of records per page, default 1000, max 1000.
+          max: null
+          min: null
+          name: size
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: number
+        params:
+          alarm_results: ''
+          alarm_status: ''
+          end_time: ''
+          event_name: ''
+          focus_ip: ''
+          size: ''
+          start_time: ''
+          sub_category: ''
+          threat_severity: ''
+        plugin_id: dbapp/xdr_plugin
+        plugin_unique_identifier: dbapp/xdr_plugin:0.0.4@0fd1d18b60745c22f718a33554a22c680f760b27c1c2e8632f0a61cd0a2e3e81
+        provider_icon: http://10.20.183.170:30080/console/api/workspaces/current/plugin/icon?tenant_id=6aa18048-84ec-41f5-b062-a39c975b8841&filename=3e0dcce7358f1a9d1367b7925b3e1e1ed869ee6c7931f2d74061bbcef77c34cb.svg
+        provider_id: dbapp/xdr_plugin/xdr_plugin
+        provider_name: dbapp/xdr_plugin/xdr_plugin
+        provider_type: builtin
+        selected: false
+        title: 安全事件查询
+        tool_configurations:
+          alarm_results:
+            type: constant
+            value:
+            - OK
+            - FAIL
+            - UNKNOWN
+          alarm_status:
+            type: constant
+            value:
+            - unprocessed
+            - processing
+            - processed
+            - falsePositives
+            - ignore
+          end_time:
+            type: mixed
+            value: '2026-06-25 23:00:00'
+          event_name:
+            type: mixed
+            value: ''
+          focus_ip:
+            type: mixed
+            value: ''
+          focus_object:
+            type: constant
+          is_scenario:
+            type: constant
+          judge_results:
+            type: constant
+            value: []
+          page:
+            type: mixed
+            value: '1'
+          size:
+            type: constant
+            value: 10
+          start_time:
+            type: mixed
+            value: '2026-06-25 00:00:00'
+          sub_category:
+            type: mixed
+            value: ''
+          tag_search:
+            type: constant
+            value: []
+          threat_severity:
+            type: constant
+            value:
+            - High
+            - Medium
+            - Low
+          timeInterval:
+            type: constant
+            value: null
+        tool_description: 从XDR平台查询安全事件（风险事件）列表，支持按时间范围、事件类型、威胁等级、处置状态等条件过滤及分页。
+        tool_label: 安全事件查询
+        tool_name: query_security_events
+        tool_node_version: '2'
+        tool_parameters: {}
+        type: tool
+      height: 452
+      id: '1781094025706'
+      position:
+        x: 678.8413079641733
+        y: 256.1587796576584
+      positionAbsolute:
+        x: 678.8413079641733
+        y: 256.1587796576584
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        error_handle_mode: continue-on-error
+        flatten_output: true
+        height: 567
+        is_parallel: false
+        iterator_input_type: array[number]
+        iterator_selector:
+        - '1781094180113'
+        - indices
+        output_selector:
+        - '1781094339078'
+        - text
+        output_type: array[string]
+        parallel_nums: 10
+        selected: false
+        start_node_id: 1781094085148start
+        title: 迭代
+        type: iteration
+        width: 688
+      height: 567
+      id: '1781094085148'
+      position:
+        x: 1259.432577432301
+        y: 177
+      positionAbsolute:
+        x: 1259.432577432301
+        y: 177
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 688
+      zIndex: 1
+    - data:
+        desc: ''
+        isInIteration: true
+        selected: false
+        title: ''
+        type: iteration-start
+      draggable: false
+      height: 48
+      id: 1781094085148start
+      parentId: '1781094085148'
+      position:
+        x: 24
+        y: 68
+      positionAbsolute:
+        x: 1283.432577432301
+        y: 245
+      selectable: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-iteration-start
+      width: 44
+      zIndex: 1002
+    - data:
+        code: "import json\n\ndef main(index: int, events_json: str) -> dict:\n  \
+          \  \"\"\"按索引从 events_json 取出单条事件并提取阻断字段。\"\"\"\n    events = json.loads(events_json)\
+          \ if events_json else []\n    item = events[index] if 0 <= index < len(events)\
+          \ else {}\n\n    event_id = item.get(\"id\", \"\")\n    event_name = item.get(\"\
+          name\", \"\")\n    focus_ip = item.get(\"focusIp\", \"\") or \"\"\n    focus_object_cn\
+          \ = item.get(\"focusObjectCN\", \"\")\n    threat_severity = item.get(\"\
+          threatSeverity\", \"\")\n    alarm_status = item.get(\"alarmStatus\", \"\
+          \")\n    sub_category = item.get(\"subCategory\", \"\")\n\n    desc = f\"\
+          安全事件自动阻断: {event_name} (ID:{event_id}, 等级:{threat_severity})\"\n\n    return\
+          \ {\n        \"event\": item,\n        \"event_id\": str(event_id),\n  \
+          \      \"event_name\": event_name,\n        \"focus_ip\": focus_ip,\n  \
+          \      \"ip_to_block\": focus_ip,\n        \"focus_object_cn\": focus_object_cn,\n\
+          \        \"threat_severity\": threat_severity,\n        \"alarm_status\"\
+          : alarm_status,\n        \"sub_category\": sub_category,\n        \"block_desc\"\
+          : desc,\n    }\n"
+        code_language: python3
+        isInIteration: true
+        isInLoop: false
+        iteration_id: '1781094085148'
+        outputs:
+          alarm_status:
+            children: null
+            type: string
+          block_desc:
+            children: null
+            type: string
+          event:
+            children: null
+            type: object
+          event_id:
+            children: null
+            type: string
+          event_name:
+            children: null
+            type: string
+          focus_ip:
+            children: null
+            type: string
+          focus_object_cn:
+            children: null
+            type: string
+          ip_to_block:
+            children: null
+            type: string
+          sub_category:
+            children: null
+            type: string
+          threat_severity:
+            children: null
+            type: string
+        selected: true
+        title: 解析单条安全事件
+        type: code
+        variables:
+        - value_selector:
+          - '1781094085148'
+          - item
+          value_type: number
+          variable: index
+        - value_selector:
+          - '1781094180113'
+          - events_json
+          value_type: string
+          variable: events_json
+      height: 52
+      id: '1781094091084'
+      parentId: '1781094085148'
+      position:
+        x: 128
+        y: 67
+      positionAbsolute:
+        x: 1387.432577432301
+        y: 244
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 1002
+    - data:
+        code: "import json\n\ndef main(tool_json: list) -> dict:\n    \"\"\"从安全事件查询结果提取待阻断事件，输出索引与\
+          \ JSON 字符串。\"\"\"\n    events = []\n    if tool_json:\n        for page\
+          \ in tool_json:\n            if isinstance(page, dict):\n              \
+          \  data = page.get(\"data\")\n                if isinstance(data, list):\n\
+          \                    # 原始格式: page.data 直接是列表\n                    events.extend(data)\n\
+          \                elif isinstance(data, dict) and isinstance(data.get(\"\
+          data\"), list):\n                    # API 响应格式: page.data.data 是列表\n  \
+          \                  events.extend(data[\"data\"])\n\n    block_events = [\n\
+          \        e for e in events\n        if e.get(\"focusIp\")\n    ]\n\n   \
+          \ return {\n        \"events_json\": json.dumps(block_events, ensure_ascii=False),\n\
+          \        \"indices\": list(range(len(block_events))),\n        \"total\"\
+          : len(block_events),\n        \"all_total\": len(events),\n    }"
+        code_language: python3
+        outputs:
+          all_total:
+            children: null
+            type: number
+          events_json:
+            children: null
+            type: string
+          indices:
+            children: null
+            type: array[number]
+          total:
+            children: null
+            type: number
+        selected: false
+        title: 解析安全事件列表
+        type: code
+        variables:
+        - value_selector:
+          - '1781094025706'
+          - json
+          value_type: array[object]
+          variable: tool_json
+      height: 52
+      id: '1781094180113'
+      position:
+        x: 940.5
+        y: 189.56742256769908
+      positionAbsolute:
+        x: 940.5
+        y: 189.56742256769908
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        isInIteration: true
+        isInLoop: false
+        is_team_authorization: true
+        iteration_id: '1781094085148'
+        paramSchemas:
+        - auto_generate: null
+          default: null
+          form: form
+          human_description:
+            en_US: IP addresses to block, multiple IPs separated by commas
+            ja_JP: IP addresses to block, multiple IPs separated by commas
+            pt_BR: IP addresses to block, multiple IPs separated by commas
+            zh_Hans: 要封禁的IP地址，多个用英文逗号分割
+          label:
+            en_US: IP Address
+            ja_JP: IP Address
+            pt_BR: IP Address
+            zh_Hans: IP地址
+          llm_description: One or more IP addresses to block, separated by commas,
+            e.g. 10.1.2.3,192.168.1.100
+          max: null
+          min: null
+          name: ip_address
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: '3600'
+          form: form
+          human_description:
+            en_US: Validity period in seconds (1~31536000), -1 for permanent block
+            ja_JP: Validity period in seconds (1~31536000), -1 for permanent block
+            pt_BR: Validity period in seconds (1~31536000), -1 for permanent block
+            zh_Hans: 有效时间，单位秒，范围1~31536000，-1表示永久封禁
+          label:
+            en_US: Validity Period (seconds)
+            ja_JP: Validity Period (seconds)
+            pt_BR: Validity Period (seconds)
+            zh_Hans: 有效时间（秒）
+          llm_description: Validity period in seconds. Range 1~31536000. Use -1 for
+            permanent block. Default is 3600.
+          max: null
+          min: null
+          name: age
+          options: []
+          placeholder: null
+          precision: null
+          required: true
+          scope: null
+          template: null
+          type: string
+        - auto_generate: null
+          default: ''
+          form: form
+          human_description:
+            en_US: Description of the block action
+            ja_JP: Description of the block action
+            pt_BR: Description of the block action
+            zh_Hans: 阻断动作的描述信息
+          label:
+            en_US: Description
+            ja_JP: Description
+            pt_BR: Description
+            zh_Hans: 描述
+          llm_description: Optional description of why this IP is being blocked.
+          max: null
+          min: null
+          name: desc
+          options: []
+          placeholder: null
+          precision: null
+          required: false
+          scope: null
+          template: null
+          type: string
+        params:
+          age: ''
+          desc: ''
+          ip_address: ''
+        plugin_id: dbapp/firewall_mingyu_das_tgfw
+        plugin_unique_identifier: dbapp/firewall_mingyu_das_tgfw:0.0.1@188b706984456d400d17389080cb68f535ef700602aec01def86dac3324846cb
+        provider_icon: http://10.20.183.170:30080/console/api/workspaces/current/plugin/icon?tenant_id=6aa18048-84ec-41f5-b062-a39c975b8841&filename=7c5fdb613676971b68d41dc3062d0a63100da64ef2fdf9dd7fa8ef281f794cde.svg
+        provider_id: dbapp/firewall_mingyu_das_tgfw/firewall_mingyu_das_tgfw
+        provider_name: dbapp/firewall_mingyu_das_tgfw/firewall_mingyu_das_tgfw
+        provider_type: builtin
+        selected: false
+        title: 阻断IP
+        tool_configurations:
+          age:
+            type: mixed
+            value: '3600'
+          desc:
+            type: mixed
+            value: /
+          ip_address:
+            type: mixed
+            value: '{{#1781094091084.focus_ip#}}'
+        tool_description: 在防火墙设备上阻断一个或多个IP地址，支持设置有效时间和描述。
+        tool_label: 阻断IP
+        tool_name: block_ip
+        tool_node_version: '2'
+        tool_parameters:
+          device_info:
+            type: constant
+            value: tgfw
+        type: tool
+      height: 140
+      id: '1781094339078'
+      parentId: '1781094085148'
+      position:
+        x: 353.5
+        y: 243
+      positionAbsolute:
+        x: 1612.932577432301
+        y: 420
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+      zIndex: 1002
+    viewport:
+      x: -116.26416072113238
+      y: 78.5514069837194
+      zoom: 0.6980425472666245
+  rag_pipeline_variables: []
